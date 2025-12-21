@@ -35,18 +35,18 @@ const reducer = (state: Array<VectorTileLayerProps>, action: Action) => {
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [layersState, dispatch] = useReducer(reducer, [
     {
-      id: 'retail-stores',
-      data: retailStoresSource,
-      pointRadiusMinPixels: 3,
-      getFillColor: [200, 0, 80],
-      visible: true,
-    },
-    {
       id: 'demographics',
       data: demographicsSource,
       getFillColor: [0, 0, 200, 80],
       getLineColor: [0, 0, 200],
       lineWidthMinPixels: 1,
+      visible: true,
+    },
+    {
+      id: 'retail-stores',
+      data: retailStoresSource,
+      pointRadiusMinPixels: 3,
+      getFillColor: [200, 0, 80],
       visible: true,
     },
   ])
