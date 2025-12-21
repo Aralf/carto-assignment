@@ -1,6 +1,7 @@
 import { createContext, useReducer } from 'react'
 import type { ActionDispatch, ReactNode } from 'react'
 import type { VectorTileLayerProps } from '@deck.gl/carto'
+import type { RgbColor } from '@/types.ts'
 import { demographicsSource, retailStoresSource } from '@/components/const.ts'
 
 type AppProviderProps = Array<VectorTileLayerProps>
@@ -16,7 +17,7 @@ type Action =
       type: 'TOGGLE_LAYER'
       id: string
     }
-  | { type: 'FILL_COLOR'; id: string }
+  | { type: 'FILL_COLOR'; id: string; color: RgbColor }
 
 const reducer = (state: Array<VectorTileLayerProps>, action: Action) => {
   switch (action.type) {
@@ -25,6 +26,14 @@ const reducer = (state: Array<VectorTileLayerProps>, action: Action) => {
       return state.with(layerIndex, {
         ...state[layerIndex],
         visible: !state[layerIndex].visible,
+      })
+    }
+    case 'FILL_COLOR': {
+      const { id, color } = action
+      const layerIndex = state.findIndex((layer) => layer.id === id)
+      return state.with(layerIndex, {
+        ...state[layerIndex],
+        getFillColor: color,
       })
     }
     default:

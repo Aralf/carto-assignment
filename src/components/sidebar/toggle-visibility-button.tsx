@@ -16,7 +16,11 @@ export const ToggleVisibilityButton = ({
   }
 
   return (
-    <IconButton onClick={handleToggleVisibility}>
+    <IconButton
+      id="toggle-visibility-button"
+      onClick={handleToggleVisibility}
+      data-visible={state.visible}
+    >
       {state.visible ? <VisibilityOutlined /> : <VisibilityOffOutlined />}
     </IconButton>
   )

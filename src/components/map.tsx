@@ -1,4 +1,4 @@
-import { use } from 'react'
+import { use, useDeferredValue } from 'react'
 import { DeckGL } from '@deck.gl/react'
 import { BASEMAP, VectorTileLayer } from '@deck.gl/carto'
 import Maplibre from 'react-map-gl/maplibre'
@@ -17,9 +17,11 @@ const INITIAL_VIEW_STATE: MapViewState = {
 
 export default function Map({ children }: { children?: ReactNode }) {
   const layersState = use(AppContext)
+  const deferredLayersState = useDeferredValue(layersState)
 
   const layers =
-    layersState?.map((layerState) => new VectorTileLayer(layerState)) ?? []
+    deferredLayersState?.map((layerState) => new VectorTileLayer(layerState)) ??
+    []
 
   return (
     <DeckGL initialViewState={INITIAL_VIEW_STATE} controller layers={layers}>
