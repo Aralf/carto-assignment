@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Box } from '@mui/material'
 import Map from '@/components/map'
 
 export const Route = createFileRoute('/')({
@@ -7,8 +8,17 @@ export const Route = createFileRoute('/')({
 
 function App() {
   return (
-    <div>
-      <Map />
-    </div>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: '320px minmax(0, 1fr)',
+        height: '100dvh',
+      }}
+    >
+      <div></div>
+      <Box sx={{ position: 'relative' }}>
+        <Map />
+      </Box>
+    </Box>
   )
 }
