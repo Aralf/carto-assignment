@@ -1,5 +1,10 @@
 import { DeckGL } from '@deck.gl/react'
-import { BASEMAP, VectorTileLayer, vectorTableSource } from '@deck.gl/carto'
+import {
+  BASEMAP,
+  VectorTileLayer,
+  vectorTableSource,
+  vectorTilesetSource,
+} from '@deck.gl/carto'
 import Maplibre from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { ReactNode } from 'react'
@@ -30,12 +35,26 @@ const RetailStoresLayer = new VectorTileLayer({
   getFillColor: [200, 0, 80],
 })
 
+const demographicsSource = vectorTilesetSource({
+  ...cartoConfig,
+  tableName: 'carto-demo-data.demo_tilesets.sociodemographics_usa_blockgroup',
+})
+
+const DemographicsLayer = new VectorTileLayer({
+  id: 'demographics',
+  data: demographicsSource,
+  // pointType: 'polygon',
+  getFillColor: [0, 0, 200, 80],
+  getLineColor: [0, 0, 200],
+  lineWidthMinPixels: 1,
+})
+
 export default function Map({ children }: { children?: ReactNode }) {
   return (
     <DeckGL
       initialViewState={INITIAL_VIEW_STATE}
       controller
-      layers={[RetailStoresLayer]}
+      layers={[RetailStoresLayer, DemographicsLayer]}
     >
       <Maplibre mapStyle={BASEMAP.VOYAGER}>{children}</Maplibre>
     </DeckGL>
