@@ -13,8 +13,8 @@ export const ColorInput = ({
   onChange?: (newColor: RgbColor) => void
   id?: string
 }) => {
-  const [color, setOptimisticColor] = useOptimistic(value)
-  const [r, g, b, a = 100] = color
+  const [optimisticColor, setOptimisticColor] = useOptimistic(value)
+  const [r, g, b, a = 100] = optimisticColor
   const hexColor = rgbToHex([r, g, b])
 
   const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
