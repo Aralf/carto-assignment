@@ -13,11 +13,13 @@ export const AppContext = createContext<AppProviderProps | null>(null)
 export const AppDispatchContext = createContext<AppDispatchProps | null>(null)
 
 type Action =
-  | {
-      type: 'TOGGLE_LAYER'
-      id: string
-    }
+  | { type: 'TOGGLE_LAYER'; id: string }
+  | { type: 'TOGGLE_FILL'; id: string }
+  | { type: 'TOGGLE_STROKE'; id: string }
+  | { type: 'RADIUS_SIZE'; id: string; size: number }
   | { type: 'FILL_COLOR'; id: string; color: RgbColor }
+  | { type: 'STROKE_COLOR'; id: string; color: RgbColor }
+  | { type: 'STROKE_WIDTH'; id: string; width: number }
 
 const reducer = (state: Array<VectorTileLayerProps>, action: Action) => {
   switch (action.type) {
@@ -28,12 +30,52 @@ const reducer = (state: Array<VectorTileLayerProps>, action: Action) => {
         visible: !state[layerIndex].visible,
       })
     }
+    case 'TOGGLE_FILL': {
+      const layerIndex = state.findIndex((layer) => layer.id === action.id)
+      return state.with(layerIndex, {
+        ...state[layerIndex],
+        filled: !state[layerIndex].filled,
+        getFillColor: state[layerIndex].filled ? undefined : [0, 0, 200, 80],
+      })
+    }
+    case 'TOGGLE_STROKE': {
+      const layerIndex = state.findIndex((layer) => layer.id === action.id)
+      return state.with(layerIndex, {
+        ...state[layerIndex],
+        stroked: !state[layerIndex].stroked,
+        getLineColor: state[layerIndex].stroked ? undefined : [0, 0, 200],
+        lineWidthMinPixels: state[layerIndex].stroked ? undefined : 1,
+      })
+    }
+    case 'RADIUS_SIZE': {
+      const layerIndex = state.findIndex((layer) => layer.id === action.id)
+      return state.with(layerIndex, {
+        ...state[layerIndex],
+        pointRadiusMinPixels: action.size,
+      })
+    }
     case 'FILL_COLOR': {
       const { id, color } = action
       const layerIndex = state.findIndex((layer) => layer.id === id)
       return state.with(layerIndex, {
         ...state[layerIndex],
         getFillColor: color,
+      })
+    }
+    case 'STROKE_COLOR': {
+      const { id, color } = action
+      const layerIndex = state.findIndex((layer) => layer.id === id)
+      return state.with(layerIndex, {
+        ...state[layerIndex],
+        getLineColor: color,
+      })
+    }
+    case 'STROKE_WIDTH': {
+      const { id, width } = action
+      const layerIndex = state.findIndex((layer) => layer.id === id)
+      return state.with(layerIndex, {
+        ...state[layerIndex],
+        lineWidthMinPixels: width,
       })
     }
     default:
@@ -47,8 +89,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       id: 'demographics',
       data: demographicsSource,
       getFillColor: [0, 0, 200, 80],
+      filled: true,
       getLineColor: [0, 0, 200],
       lineWidthMinPixels: 1,
+      stroked: true,
       visible: true,
     },
     {
@@ -56,6 +100,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       data: retailStoresSource,
       pointRadiusMinPixels: 3,
       getFillColor: [200, 0, 80],
+      filled: true,
+      stroked: false,
       visible: true,
     },
   ])

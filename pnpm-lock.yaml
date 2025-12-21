@@ -62,6 +62,9 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.3(react@19.2.3)
+      react-error-boundary:
+        specifier: ^6.0.0
+        version: 6.0.0(react@19.2.3)
       react-map-gl:
         specifier: ^8.1.0
         version: 8.1.0(maplibre-gl@5.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -2881,6 +2884,11 @@ packages:
     resolution: {integrity: sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==}
     peerDependencies:
       react: ^19.2.3
+
+  react-error-boundary@6.0.0:
+    resolution: {integrity: sha512-gdlJjD7NWr0IfkPlaREN2d9uUZUlksrfOx7SX62VRerwXbMY6ftGCIZua1VG1aXFNOimhISsTq+Owp725b9SiA==}
+    peerDependencies:
+      react: '>=16.13.1'
 
   react-intl@8.0.6:
     resolution: {integrity: sha512-KS1G2yr+yQwp0QPF0MVkHwcmkTQor0j2TXobDRZECxEGTwT20lycLv2lSK33jTOaUTtj9DWr0dac1vpmSDiJjg==}
@@ -6457,6 +6465,11 @@ snapshots:
     dependencies:
       react: 19.2.3
       scheduler: 0.27.0
+
+  react-error-boundary@6.0.0(react@19.2.3):
+    dependencies:
+      '@babel/runtime': 7.28.4
+      react: 19.2.3
 
   react-intl@8.0.6(@types/react@19.2.7)(react@19.2.3)(typescript@5.9.3):
     dependencies:
