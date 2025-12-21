@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Box } from '@mui/material'
 import Map from '@/components/map'
+import { AppProvider } from '@/components/provider.tsx'
+import { Sidebar } from '@/components/sidebar'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -8,17 +10,21 @@ export const Route = createFileRoute('/')({
 
 function App() {
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: '320px minmax(0, 1fr)',
-        height: '100dvh',
-      }}
-    >
-      <div></div>
-      <Box sx={{ position: 'relative' }}>
-        <Map />
+    <AppProvider>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: '320px minmax(0, 1fr)',
+          height: '100dvh',
+        }}
+      >
+        <div>
+          <Sidebar />
+        </div>
+        <Box sx={{ position: 'relative' }}>
+          <Map />
+        </Box>
       </Box>
-    </Box>
+    </AppProvider>
   )
 }
