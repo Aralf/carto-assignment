@@ -12,8 +12,8 @@ import {
 import { colorBins } from '@deck.gl/carto'
 import type { Color } from '@deck.gl/core'
 import type { CustomVectorTileLayerProps } from '@/types.ts'
-import { ColorInput } from '@/components/common/color-input.tsx'
-import { ColorSelect } from '@/components/common/color-select.tsx'
+import { ColorInput } from '@/components/common/inputs/color-input.tsx'
+import { ColorSelect } from '@/components/common/inputs/color-select.tsx'
 import { AppDispatchContext } from '@/components/provider.tsx'
 
 export const FillColorControl = ({

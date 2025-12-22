@@ -22,9 +22,9 @@ import type { FallbackProps } from 'react-error-boundary'
 import type { TilejsonResult } from '@deck.gl/carto'
 import type { CustomVectorTileLayerProps } from '@/types.ts'
 import { ToggleVisibilityButton } from '@/components/sidebar/toggle-visibility-button.tsx'
-import { FillSection } from '@/components/sidebar/fill-section.tsx'
-import { StrokeSection } from '@/components/sidebar/stroke-section.tsx'
-import { RadiusSection } from '@/components/sidebar/radius-section.tsx'
+import { FillSection } from '@/components/sidebar/sections/fill-section.tsx'
+import { StrokeSection } from '@/components/sidebar/sections/stroke-section.tsx'
+import { RadiusSection } from '@/components/sidebar/sections/radius-section.tsx'
 
 const StyledCard = styled(Card)`
   #toggle-visibility-button {

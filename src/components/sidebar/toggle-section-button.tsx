@@ -4,7 +4,7 @@ import { use } from 'react'
 import type { CustomVectorTileLayerProps } from '@/types.ts'
 import { AppDispatchContext } from '@/components/provider.tsx'
 
-export const ToggleSection = ({
+export const ToggleSectionButton = ({
   state,
   section,
 }: {

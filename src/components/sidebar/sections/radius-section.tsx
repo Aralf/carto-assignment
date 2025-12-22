@@ -2,7 +2,7 @@ import { use } from 'react'
 import { FormControl, InputLabel, Stack, Typography } from '@mui/material'
 import type { VectorTileLayerProps } from '@deck.gl/carto'
 import { AppDispatchContext } from '@/components/provider.tsx'
-import { PixelSizeInput } from '@/components/common/pixel-input.tsx'
+import { PixelSizeInput } from '@/components/common/inputs/pixel-input.tsx'
 
 export const RadiusSection = ({ state }: { state: VectorTileLayerProps }) => {
   const dispatch = use(AppDispatchContext)

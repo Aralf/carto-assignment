@@ -1,10 +1,11 @@
 import { use } from 'react'
 import { FormControl, InputLabel } from '@mui/material'
 import type { CustomVectorTileLayerProps } from '@/types.ts'
-import { PixelSizeInput } from '@/components/common/pixel-input.tsx'
+import type { Color } from '@deck.gl/core'
 import { AppDispatchContext } from '@/components/provider.tsx'
+import { ColorInput } from '@/components/common/inputs/color-input.tsx'
 
-export const StrokeWeightControl = ({
+export const StrokeColorControl = ({
   state,
 }: {
   state: CustomVectorTileLayerProps
@@ -13,15 +14,15 @@ export const StrokeWeightControl = ({
   return (
     <>
       <FormControl>
-        <InputLabel htmlFor="stroke-size-input">Stroke weight</InputLabel>
-        <PixelSizeInput
-          id="stroke-size-input"
-          value={state.lineWidthMinPixels ?? 0}
-          onChange={(newLineWidth) =>
+        <InputLabel htmlFor="stroke-color-input">Color</InputLabel>
+        <ColorInput
+          id="stroke-color-input"
+          value={state.getLineColor as Color}
+          onChange={(newRgbColor) =>
             dispatch?.({
-              type: 'STROKE_WIDTH',
+              type: 'STROKE_COLOR',
               id: state.id,
-              width: newLineWidth,
+              getColor: newRgbColor,
             })
           }
         />

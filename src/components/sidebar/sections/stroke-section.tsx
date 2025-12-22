@@ -1,8 +1,8 @@
 import { Stack, Typography } from '@mui/material'
 import type { CustomVectorTileLayerProps } from '@/types.ts'
-import { ToggleSection } from '@/components/sidebar/toggle-section.tsx'
-import { StrokeColorControl } from '@/components/common/stroke-color-control.tsx'
-import { StrokeWeightControl } from '@/components/common/stroke-weight-control.tsx'
+import { ToggleSectionButton } from '@/components/sidebar/toggle-section-button.tsx'
+import { StrokeColorControl } from '@/components/common/controls/stroke-color-control.tsx'
+import { StrokeWeightControl } from '@/components/common/controls/stroke-weight-control.tsx'
 
 export const StrokeSection = ({
   state,
@@ -19,7 +19,7 @@ export const StrokeSection = ({
         sx={{ width: '100%' }}
       >
         <Typography variant="body2">Stroke</Typography>
-        <ToggleSection state={state} section="stroke" />
+        <ToggleSectionButton state={state} section="stroke" />
       </Stack>
       {state.stroked ? (
         <>
