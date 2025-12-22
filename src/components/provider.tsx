@@ -121,6 +121,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       lineWidthMinPixels: 1,
       stroked: true,
       visible: true,
+      pickable: true,
       config: {
         fillColorField: 'SIMPLE',
         fillColorName: 'BurgYl',
@@ -138,6 +139,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       filled: true,
       stroked: false,
       visible: true,
+      pickable: true,
       config: {
         fillColorField: 'SIMPLE',
         fillColorName: 'Sunset',
