@@ -33,8 +33,6 @@ type Action<TFeatureProperties = unknown> =
       getColor:
         | Accessor<Feature<Geometry, TFeatureProperties>, Color>
         | undefined
-      field: 'SIMPLE' | (string & {})
-      name: string
     }
   | {
       type: 'STROKE_WIDTH'
@@ -89,15 +87,13 @@ const reducer = (state: Array<CustomVectorTileLayerProps>, action: Action) => {
       })
     }
     case 'STROKE_COLOR': {
-      const { id, getColor, field, name } = action
+      const { id, getColor } = action
       const layerIndex = state.findIndex((layer) => layer.id === id)
       return state.with(layerIndex, {
         ...state[layerIndex],
         getLineColor: getColor,
         config: {
           ...state[layerIndex].config,
-          strokeColorField: field,
-          strokeColorName: name,
         },
       })
     }
@@ -127,11 +123,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       visible: true,
       config: {
         fillColorField: 'SIMPLE',
-        strokeColorField: 'SIMPLE',
         fillColorName: 'BurgYl',
-        strokeColorName: 'DarkMint',
         fillColorNameDefault: 'BurgYl',
-        strokeColorNameDefault: 'DarkMint',
         fieldsInfo: [
           { field: 'total_pop', domain: [768, 1008, 1265, 1593, 2126] },
         ],
@@ -147,11 +140,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       visible: true,
       config: {
         fillColorField: 'SIMPLE',
-        strokeColorField: 'SIMPLE',
         fillColorName: 'Sunset',
-        strokeColorName: 'BurgYl',
         fillColorNameDefault: 'Sunset',
-        strokeColorNameDefault: 'BurgYl',
         fieldsInfo: [
           {
             field: 'revenue',

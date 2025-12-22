@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material'
 import type { CustomVectorTileLayerProps } from '@/types.ts'
 import { ToggleSection } from '@/components/sidebar/toggle-section.tsx'
-import { ColorControl } from '@/components/common/color-control.tsx'
+import { FillColorControl } from '@/components/common/fill-color-control.tsx'
 
 export const FillSection = ({
   state,
@@ -23,7 +23,7 @@ export const FillSection = ({
         <ToggleSection state={state} section="fill" />
       </Stack>
       {state.filled ? (
-        <ColorControl field="fill" state={state} dataFields={dataFields} />
+        <FillColorControl state={state} dataFields={dataFields} />
       ) : null}
     </Stack>
   )

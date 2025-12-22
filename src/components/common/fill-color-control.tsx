@@ -16,28 +16,26 @@ import { ColorInput } from '@/components/common/color-input.tsx'
 import { ColorSelect } from '@/components/common/color-select.tsx'
 import { AppDispatchContext } from '@/components/provider.tsx'
 
-export const ColorControl = ({
+export const FillColorControl = ({
   state,
   dataFields,
-  field,
 }: {
   state: CustomVectorTileLayerProps
   dataFields: Record<string, string>
-  field: 'fill' | 'stroke'
 }) => {
   const dispatch = use(AppDispatchContext)
-  const actionType = field === 'fill' ? 'FILL_COLOR' : 'STROKE_COLOR'
 
   return (
     <>
       <FormControl>
-        <InputLabel htmlFor={`${field}-color-input`}>Color</InputLabel>
+        <InputLabel htmlFor="fill-color-select">Color</InputLabel>
         <Select
-          value={state.config[`${field}ColorField`]}
+          id="fill-color-select"
+          value={state.config.fillColorField}
           onChange={(e) => {
             const newValue = e.target.value
             dispatch?.({
-              type: actionType,
+              type: 'FILL_COLOR',
               id: state.id,
               getColor:
                 newValue === 'SIMPLE'
@@ -47,10 +45,10 @@ export const ColorControl = ({
                       domain: state.config.fieldsInfo.find(
                         (f) => f.field === newValue,
                       )?.domain ?? [0, 1000],
-                      colors: state.config[`${field}ColorNameDefault`],
+                      colors: state.config.fillColorNameDefault,
                     }),
               field: newValue,
-              name: state.config[`${field}ColorName`],
+              name: state.config.fillColorName,
             })
           }}
           renderValue={(value) =>
@@ -72,40 +70,36 @@ export const ColorControl = ({
             ))}
         </Select>
       </FormControl>
-      {state.config[`${field}ColorField`] === 'SIMPLE' ? (
+      {state.config.fillColorField === 'SIMPLE' ? (
         <ColorInput
-          id={`${field}-color-input`}
-          value={
-            (field === 'fill'
-              ? state.getFillColor
-              : state.getLineColor) as Color
-          }
+          id="fill-color-input"
+          value={state.getFillColor as Color}
           onChange={(newRgbColor) =>
             dispatch?.({
-              type: actionType,
+              type: 'FILL_COLOR',
               id: state.id,
               getColor: newRgbColor,
               field: 'SIMPLE',
-              name: state.config[`${field}ColorName`],
+              name: state.config.fillColorName,
             })
           }
         />
       ) : (
         <>
           <ColorSelect
-            value={state.config[`${field}ColorName`]}
+            value={state.config.fillColorName}
             onChange={(newColorName) =>
               dispatch?.({
-                type: actionType,
+                type: 'FILL_COLOR',
                 id: state.id,
                 getColor: colorBins({
-                  attr: state.config[`${field}ColorField`],
+                  attr: state.config.fillColorField,
                   domain: state.config.fieldsInfo.find(
-                    (f) => f.field === state.config[`${field}ColorField`],
+                    (f) => f.field === state.config.fillColorField,
                   )?.domain ?? [0, 1000],
                   colors: newColorName,
                 }),
-                field: state.config[`${field}ColorField`],
+                field: state.config.fillColorField,
                 name: newColorName,
               })
             }

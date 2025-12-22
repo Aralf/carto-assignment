@@ -49,8 +49,6 @@ export const LayerItem = ({ state }: { state: CustomVectorTileLayerProps }) => {
   const [open, setOpen] = useState(false)
   const layerData = use(state.data as Promise<TilejsonResult>)
 
-  console.log('state', state)
-
   const layerDataFields = layerData.vector_layers[0].fields
 
   const geometryType = layerData.vector_layers[0].geometry_type ?? 'unknown'
@@ -81,7 +79,7 @@ export const LayerItem = ({ state }: { state: CustomVectorTileLayerProps }) => {
           <Divider />
           <FillSection state={state} dataFields={layerDataFields} />
           <Divider />
-          <StrokeSection state={state} dataFields={layerDataFields} />
+          <StrokeSection state={state} />
         </CardContent>
       </Collapse>
     </StyledCard>

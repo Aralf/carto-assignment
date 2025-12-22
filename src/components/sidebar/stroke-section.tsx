@@ -1,15 +1,13 @@
 import { Stack, Typography } from '@mui/material'
 import type { CustomVectorTileLayerProps } from '@/types.ts'
 import { ToggleSection } from '@/components/sidebar/toggle-section.tsx'
-import { ColorControl } from '@/components/common/color-control.tsx'
+import { StrokeColorControl } from '@/components/common/stroke-color-control.tsx'
 import { StrokeWeightControl } from '@/components/common/stroke-weight-control.tsx'
 
 export const StrokeSection = ({
   state,
-  dataFields,
 }: {
   state: CustomVectorTileLayerProps
-  dataFields: Record<string, string>
 }) => {
   return (
     <Stack spacing={2}>
@@ -25,7 +23,7 @@ export const StrokeSection = ({
       </Stack>
       {state.stroked ? (
         <>
-          <ColorControl field="stroke" state={state} dataFields={dataFields} />
+          <StrokeColorControl state={state} />
           <StrokeWeightControl state={state} />
         </>
       ) : null}
