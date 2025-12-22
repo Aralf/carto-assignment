@@ -1,10 +1,9 @@
 import { use, useDeferredValue } from 'react'
-import { DeckGL } from '@deck.gl/react'
 import { BASEMAP, VectorTileLayer } from '@deck.gl/carto'
-import Maplibre from 'react-map-gl/maplibre'
+import { MapboxOverlay } from '@deck.gl/mapbox'
+import { Map as Maplibre, useControl } from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import type { ReactNode } from 'react'
-import type { MapViewState } from '@deck.gl/core'
+import type { DeckProps, MapViewState } from '@deck.gl/core'
 import { AppContext } from '@/components/provider.tsx'
 
 const INITIAL_VIEW_STATE: MapViewState = {
@@ -15,7 +14,13 @@ const INITIAL_VIEW_STATE: MapViewState = {
   pitch: 30,
 }
 
-export default function Map({ children }: { children?: ReactNode }) {
+function DeckGLOverlay(props: DeckProps) {
+  const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props))
+  overlay.setProps(props)
+  return null
+}
+
+export default function Map() {
   const layersState = use(AppContext)
   const deferredLayersState = useDeferredValue(layersState)
 
@@ -24,8 +29,8 @@ export default function Map({ children }: { children?: ReactNode }) {
     []
 
   return (
-    <DeckGL initialViewState={INITIAL_VIEW_STATE} controller layers={layers}>
-      <Maplibre mapStyle={BASEMAP.VOYAGER}>{children}</Maplibre>
-    </DeckGL>
+    <Maplibre initialViewState={INITIAL_VIEW_STATE} mapStyle={BASEMAP.VOYAGER}>
+      <DeckGLOverlay controller layers={layers} />
+    </Maplibre>
   )
 }
