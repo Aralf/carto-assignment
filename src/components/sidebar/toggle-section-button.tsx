@@ -15,7 +15,7 @@ export const ToggleSectionButton = ({
   const stateValue = section === 'fill' ? state.filled : state.stroked
 
   return (
-    <Tooltip title={stateValue ? `Remove ${section}` : 'Add ${section}'}>
+    <Tooltip title={stateValue ? `Remove ${section}` : `Add ${section}`}>
       <IconButton
         onClick={() =>
           dispatch?.({
