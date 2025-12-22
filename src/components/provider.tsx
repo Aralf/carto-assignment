@@ -1,10 +1,11 @@
 import { createContext, useReducer } from 'react'
 import type { ActionDispatch, ReactNode } from 'react'
-import type { VectorTileLayerProps } from '@deck.gl/carto'
-import type { RgbColor } from '@/types.ts'
+import type { Accessor, Color } from '@deck.gl/core'
+import type { Feature, Geometry } from 'geojson'
+import type { CustomVectorTileLayerProps } from '@/types.ts'
 import { demographicsSource, retailStoresSource } from '@/components/const.ts'
 
-type AppProviderProps = Array<VectorTileLayerProps>
+type AppProviderProps = Array<CustomVectorTileLayerProps>
 
 type AppDispatchProps = ActionDispatch<[action: Action]>
 
@@ -12,16 +13,36 @@ export const AppContext = createContext<AppProviderProps | null>(null)
 
 export const AppDispatchContext = createContext<AppDispatchProps | null>(null)
 
-type Action =
+type Action<TFeatureProperties = unknown> =
   | { type: 'TOGGLE_LAYER'; id: string }
   | { type: 'TOGGLE_FILL'; id: string }
   | { type: 'TOGGLE_STROKE'; id: string }
   | { type: 'RADIUS_SIZE'; id: string; size: number }
-  | { type: 'FILL_COLOR'; id: string; color: RgbColor }
-  | { type: 'STROKE_COLOR'; id: string; color: RgbColor }
-  | { type: 'STROKE_WIDTH'; id: string; width: number }
+  | {
+      type: 'FILL_COLOR'
+      id: string
+      getColor:
+        | Accessor<Feature<Geometry, TFeatureProperties>, Color>
+        | undefined
+      field: 'SIMPLE' | (string & {})
+      name: string
+    }
+  | {
+      type: 'STROKE_COLOR'
+      id: string
+      getColor:
+        | Accessor<Feature<Geometry, TFeatureProperties>, Color>
+        | undefined
+      field: 'SIMPLE' | (string & {})
+      name: string
+    }
+  | {
+      type: 'STROKE_WIDTH'
+      id: string
+      width: number
+    }
 
-const reducer = (state: Array<VectorTileLayerProps>, action: Action) => {
+const reducer = (state: Array<CustomVectorTileLayerProps>, action: Action) => {
   switch (action.type) {
     case 'TOGGLE_LAYER': {
       const layerIndex = state.findIndex((layer) => layer.id === action.id)
@@ -55,19 +76,29 @@ const reducer = (state: Array<VectorTileLayerProps>, action: Action) => {
       })
     }
     case 'FILL_COLOR': {
-      const { id, color } = action
+      const { id, getColor, field, name } = action
       const layerIndex = state.findIndex((layer) => layer.id === id)
       return state.with(layerIndex, {
         ...state[layerIndex],
-        getFillColor: color,
+        getFillColor: getColor,
+        config: {
+          ...state[layerIndex].config,
+          fillColorField: field,
+          fillColorName: name,
+        },
       })
     }
     case 'STROKE_COLOR': {
-      const { id, color } = action
+      const { id, getColor, field, name } = action
       const layerIndex = state.findIndex((layer) => layer.id === id)
       return state.with(layerIndex, {
         ...state[layerIndex],
-        getLineColor: color,
+        getLineColor: getColor,
+        config: {
+          ...state[layerIndex].config,
+          strokeColorField: field,
+          strokeColorName: name,
+        },
       })
     }
     case 'STROKE_WIDTH': {
@@ -94,6 +125,17 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       lineWidthMinPixels: 1,
       stroked: true,
       visible: true,
+      config: {
+        fillColorField: 'SIMPLE',
+        strokeColorField: 'SIMPLE',
+        fillColorName: 'BurgYl',
+        strokeColorName: 'DarkMint',
+        fillColorNameDefault: 'BurgYl',
+        strokeColorNameDefault: 'DarkMint',
+        fieldsInfo: [
+          { field: 'total_pop', domain: [768, 1008, 1265, 1593, 2126] },
+        ],
+      },
     },
     {
       id: 'retail-stores',
@@ -103,6 +145,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       filled: true,
       stroked: false,
       visible: true,
+      config: {
+        fillColorField: 'SIMPLE',
+        strokeColorField: 'SIMPLE',
+        fillColorName: 'Sunset',
+        strokeColorName: 'BurgYl',
+        fillColorNameDefault: 'Sunset',
+        strokeColorNameDefault: 'BurgYl',
+        fieldsInfo: [
+          {
+            field: 'revenue',
+            domain: [1148757, 1337864, 1526970, 1716077, 1905183],
+          },
+        ],
+      },
     },
   ])
 

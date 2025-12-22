@@ -19,7 +19,8 @@ import {
 } from '@mui/icons-material'
 import { ErrorBoundary } from 'react-error-boundary'
 import type { FallbackProps } from 'react-error-boundary'
-import type { TilejsonResult, VectorTileLayerProps } from '@deck.gl/carto'
+import type { TilejsonResult } from '@deck.gl/carto'
+import type { CustomVectorTileLayerProps } from '@/types.ts'
 import { ToggleVisibilityButton } from '@/components/sidebar/toggle-visibility-button.tsx'
 import { FillSection } from '@/components/sidebar/fill-section.tsx'
 import { StrokeSection } from '@/components/sidebar/stroke-section.tsx'
@@ -44,9 +45,13 @@ const StyledCard = styled(Card)`
   }
 `
 
-export const LayerItem = ({ state }: { state: VectorTileLayerProps }) => {
+export const LayerItem = ({ state }: { state: CustomVectorTileLayerProps }) => {
   const [open, setOpen] = useState(false)
   const layerData = use(state.data as Promise<TilejsonResult>)
+
+  console.log('state', state)
+
+  const layerDataFields = layerData.vector_layers[0].fields
 
   const geometryType = layerData.vector_layers[0].geometry_type ?? 'unknown'
 
@@ -74,9 +79,9 @@ export const LayerItem = ({ state }: { state: VectorTileLayerProps }) => {
             </>
           ) : null}
           <Divider />
-          <FillSection state={state} />
+          <FillSection state={state} dataFields={layerDataFields} />
           <Divider />
-          <StrokeSection state={state} />
+          <StrokeSection state={state} dataFields={layerDataFields} />
         </CardContent>
       </Collapse>
     </StyledCard>
@@ -142,7 +147,7 @@ export const LayerItemError = ({ error }: FallbackProps) => (
 export const LayerItemWrapper = ({
   state,
 }: {
-  state: VectorTileLayerProps
+  state: CustomVectorTileLayerProps
 }) => {
   return (
     <ErrorBoundary FallbackComponent={LayerItemError}>

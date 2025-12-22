@@ -1,22 +1,15 @@
-import { use } from 'react'
-import {
-  FormControl,
-  IconButton,
-  InputLabel,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material'
-import { AddOutlined, RemoveOutlined } from '@mui/icons-material'
-import type { VectorTileLayerProps } from '@deck.gl/carto'
-import type { RgbColor } from '@/types.ts'
-import { AppDispatchContext } from '@/components/provider.tsx'
-import { ColorInput } from '@/components/common/color-input.tsx'
+import { Stack, Typography } from '@mui/material'
+import type { CustomVectorTileLayerProps } from '@/types.ts'
+import { ToggleSection } from '@/components/sidebar/toggle-section.tsx'
+import { ColorControl } from '@/components/common/color-control.tsx'
 
-export const FillSection = ({ state }: { state: VectorTileLayerProps }) => {
-  const dispatch = use(AppDispatchContext)
-  const rgbColor = state.getFillColor as RgbColor | undefined
-
+export const FillSection = ({
+  state,
+  dataFields,
+}: {
+  state: CustomVectorTileLayerProps
+  dataFields: Record<string, string>
+}) => {
   return (
     <Stack spacing={2}>
       <Stack
@@ -27,29 +20,10 @@ export const FillSection = ({ state }: { state: VectorTileLayerProps }) => {
         sx={{ width: '100%' }}
       >
         <Typography variant="body2">Fill</Typography>
-        <Tooltip title={state.filled ? 'Remove fill' : 'Add fill'}>
-          <IconButton
-            onClick={() => dispatch?.({ type: 'TOGGLE_FILL', id: state.id })}
-          >
-            {state.filled ? <RemoveOutlined /> : <AddOutlined />}
-          </IconButton>
-        </Tooltip>
+        <ToggleSection state={state} section="fill" />
       </Stack>
-      {state.filled && rgbColor !== undefined ? (
-        <FormControl>
-          <InputLabel htmlFor="fill-color-input">Color</InputLabel>
-          <ColorInput
-            id="fill-color-input"
-            value={rgbColor}
-            onChange={(newRgbColor) =>
-              dispatch?.({
-                type: 'FILL_COLOR',
-                id: state.id,
-                color: newRgbColor,
-              })
-            }
-          />
-        </FormControl>
+      {state.filled ? (
+        <ColorControl field="fill" state={state} dataFields={dataFields} />
       ) : null}
     </Stack>
   )
