@@ -1,293 +1,106 @@
-Welcome to your new TanStack app!
+This project is publicly deployed [here](https://carto-assignment.vercel.app/)
 
 # Getting Started
 
-To run this application:
+In order to run this application locally you will need to install dependencies
 
 ```bash
 pnpm install
-pnpm start
 ```
 
-# Building For Production
+Take the `.env.example` file and rename it to `.env.local` or similar and add your own values.
 
-To build this application for production:
+You can find the steps to get your own API key [here](https://docs.carto.com/carto-for-developers/guides/build-a-public-application#creating-an-api-access-token)
+
+This application makes use of the following data sources, so you need to grant access to them:
+
+- `carto-demo-data.demo_tables.retail_stores`
+- `carto-demo-data.demo_tilesets.sociodemographics_usa_blockgroup`
+
+Once everything it's set, you can run this application locally:
 
 ```bash
-pnpm build
+pnpm dev
 ```
 
-## Testing
+# Stack
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+- Tanstack Router (vite)
+- Tanstack Query
+- MUI v7 + Charts + Carto Meridien DS
+- Deck.gl, Maplibre and react-map-gl
 
-```bash
-pnpm test
+# Design considerations
+
+## Tanstack Router
+
+For simplicity, the application is built with [Tanstack Router](https://tanstack.com/router/latest/docs/framework/react/overview), that makes use of [Vite](https://vite.dev/).
+
+## React compiler
+
+This application makes use of the [React Compiler](https://react.dev/learn/react-compiler/introduction) for simplicity, reducing the overhead of having to think to use `useCallback`, `useMemo` and `React.memo` while avoiding known pitfalls like inline functions..
+
+## Data sources
+
+The assignment asks to make use specifically of two data sources
+
+- `carto-demo-data.demo_tables.retail_stores`
+- `carto-demo-data.demo_tilesets.sociodemographics_usa_blockgroup`
+
+Even though it is only two, and they are fixed, instead of defininingh a two specific states for each or fixed object,
+I wanted to make the more realistic case of having an array of data sources / layers.
+
+## Style controllers
+
+I fulfilled the requirements for the style controllers according to the instructions. However, I admit that initially I went a bit overboard
+by generalizing components like `color-controller` for both `fill` and `stroke`, allowing to choose between simple color or base on column, the instructions only ask to do it for the fill, so I separate both cases to simplify.
+
+Similarly, for the case of coloring based on a column, initially I was going to allow selecting any column, but for simplicity I decided to only allow the mentioned columns from the instructions.
+
+When making changes to the style properties (radius, fill, stroke) instead of debouncing the changes to optimize rendering I took the approach of makign use of React transitions coupled with `useOptimistic` and `useDeferredValue`:
+
+- useOptimitic allows instant update on the style controller while we defer the re-render of `Map` component and its layers
+- Instead of giving a fix delay time for debouncing, the updated is adjusted base on the user's device performance.
+- Re-renders with useDeferredValue are interruptible
+
+## Tooltip
+
+To achieve the required tooltip behaviour I could have used the `getTooltip` callback from Deck.gl,
+but I wanted the behavior to click on the feature and have a popup stick to the coordinates clicked.
+
+Maplibre Popup allows this and the component from `react-map-gl` makes it simple enough.
+
+The only use is that with the default rendering of Deck.gl as a separate canvas on top of Maplibre, this Popup was always behind the Deck.gl layers.
+
+Therefore, I adjusted the setup to make use of [MapboxOverlay](https://deck.gl/docs/developer-guide/base-maps/using-with-maplibre#overlaid)
+
+## Widgets
+
+I decided to implement the case of a single widget related to store retails, to display the revenue per store type.
+
+Ideally, I would have liked to have the widget support dynamic layers instead of specifically a single layer, but to save time and complexity I decided to go with this approach.
+
+## UI Components
+
+Made use of MUI components as suggested on instructions, I took the liberty to make use of Casto Meridien theme, this is similar to what Carto Builder uses.
+
+## Async + Data Fetching
+
+To get the information of each layer for the sidebar list, I used React's `use` [API](https://react.dev/reference/react/use) to resolve the promise of the source data.
+Coupled with ErrorBoundary and Suspense, this ensures that the UI is not blocked while waiting for the data to be fetched, and any errors are handled gracefully.
+
+A similar approach is used for the retail-store widget, in this case using Tanstack Query [useSuspenseQuery](https://tanstack.com/query/v5/docs/framework/react/guides/suspense)
+
+This follows the pattern of `render-as-you-fetch` instead of traditional `fetch-as-you-render`.
+
+# Use of AI Assistant Tools
+
+Only for the functions of `hexToRgb` and `rgbToHex` I used an AI assitant tool
+
+The prompt:
+
+```text
+Give me the conversion functions from
+1. HEX (shorthand and full) to RGB/RGBA
+2. RGB/RGBA to HEX
 ```
-
-## Linting & Formatting
-
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
-
-```bash
-pnpm lint
-pnpm format
-pnpm check
-```
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add another a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from '@tanstack/react-router'
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you use the `<Outlet />` component.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
-import { Link } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  component: () => (
-    <>
-      <header>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-})
-```
-
-The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-const peopleRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/people',
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json() as Promise<{
-      results: {
-        name: string
-      }[]
-    }>
-  },
-  component: () => {
-    const data = peopleRoute.useLoaderData()
-    return (
-      <ul>
-        {data.results.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    )
-  },
-})
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-### React-Query
-
-React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
-
-First add your dependencies:
-
-```bash
-pnpm add @tanstack/react-query @tanstack/react-query-devtools
-```
-
-Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
-
-```tsx
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-// ...
-
-const queryClient = new QueryClient()
-
-// ...
-
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement)
-
-  root.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>,
-  )
-}
-```
-
-You can also add TanStack Query Devtools to the root route (optional).
-
-```tsx
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools />
-    </>
-  ),
-})
-```
-
-Now you can use `useQuery` to fetch your data.
-
-```tsx
-import { useQuery } from '@tanstack/react-query'
-
-import './App.css'
-
-function App() {
-  const { data } = useQuery({
-    queryKey: ['people'],
-    queryFn: () =>
-      fetch('https://swapi.dev/api/people')
-        .then((res) => res.json())
-        .then((data) => data.results as { name: string }[]),
-    initialData: [],
-  })
-
-  return (
-    <div>
-      <ul>
-        {data.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-export default App
-```
-
-You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
-
-## State Management
-
-Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
-
-First you need to add TanStack Store as a dependency:
-
-```bash
-pnpm add @tanstack/store
-```
-
-Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
-
-```tsx
-import { useStore } from '@tanstack/react-store'
-import { Store } from '@tanstack/store'
-import './App.css'
-
-const countStore = new Store(0)
-
-function App() {
-  const count = useStore(countStore)
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-    </div>
-  )
-}
-
-export default App
-```
-
-One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
-
-Let's check this out by doubling the count using derived state.
-
-```tsx
-import { useStore } from '@tanstack/react-store'
-import { Store, Derived } from '@tanstack/store'
-import './App.css'
-
-const countStore = new Store(0)
-
-const doubledStore = new Derived({
-  fn: () => countStore.state * 2,
-  deps: [countStore],
-})
-doubledStore.mount()
-
-function App() {
-  const count = useStore(countStore)
-  const doubledCount = useStore(doubledStore)
-
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-      <div>Doubled - {doubledCount}</div>
-    </div>
-  )
-}
-
-export default App
-```
-
-We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
-
-Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
-
-You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
