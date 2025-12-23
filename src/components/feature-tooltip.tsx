@@ -1,4 +1,11 @@
 import { Popup } from 'react-map-gl/maplibre'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from '@mui/material'
 import type { PickingInfo } from '@deck.gl/core'
 import type { Feature } from 'geojson'
 
@@ -19,11 +26,18 @@ export const FeatureTooltip = ({
       onClose={onClose}
     >
       {info.object?.properties && (
-        <div>
-          {Object.entries(info.object.properties).map(([key, value]) => (
-            <div key={key}>{`${key}: ${value}`}</div>
-          ))}
-        </div>
+        <TableContainer sx={{ backgroundColor: 'default.light' }}>
+          <Table size="small">
+            <TableBody>
+              {Object.entries(info.object.properties).map(([key, value]) => (
+                <TableRow key={key}>
+                  <TableCell>{key}</TableCell>
+                  <TableCell>{value}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Popup>
   )
