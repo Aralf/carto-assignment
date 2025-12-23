@@ -27,6 +27,7 @@ import { StrokeSection } from '@/components/sidebar/sections/stroke-section.tsx'
 import { RadiusSection } from '@/components/sidebar/sections/radius-section.tsx'
 
 const StyledCard = styled(Card)`
+  flex-shrink: 0;
   #toggle-visibility-button {
     visibility: hidden;
   }

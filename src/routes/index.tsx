@@ -16,12 +16,11 @@ function App() {
         sx={{
           display: 'grid',
           gridTemplateColumns: '320px minmax(0, 1fr)',
+          gridTemplateRows: 'minmax(0, 1fr)',
           height: '100dvh',
         }}
       >
-        <div>
-          <Sidebar />
-        </div>
+        <Sidebar />
         <Box sx={{ position: 'relative' }}>
           <Map />
           <WidgetPanel />

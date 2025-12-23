@@ -6,7 +6,15 @@ import { LayerItemWrapper } from '@/components/sidebar/layer-item.tsx'
 export const Sidebar = () => {
   const layersState = use(AppContext)
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, margin: 1 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        margin: 1,
+        overflowY: 'auto',
+      }}
+    >
       {layersState?.map((layer) => (
         <LayerItemWrapper key={layer.id} state={layer} />
       )) ?? []}
