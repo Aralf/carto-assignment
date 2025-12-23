@@ -14,7 +14,6 @@ export const ColorInput = ({
   id?: string
 }) => {
   const [optimisticColor, setOptimisticColor] = useOptimistic(value)
-  console.log('color-input', id, optimisticColor)
   const [r, g, b, a = 100] = optimisticColor
   const hexColor = rgbToHex([r, g, b])
 

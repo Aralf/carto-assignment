@@ -3,6 +3,7 @@ import { Box } from '@mui/material'
 import Map from '@/components/map'
 import { AppProvider } from '@/components/provider.tsx'
 import { Sidebar } from '@/components/sidebar'
+import { WidgetPanel } from '@/components/widgets/widget-panel.tsx'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -23,6 +24,7 @@ function App() {
         </div>
         <Box sx={{ position: 'relative' }}>
           <Map />
+          <WidgetPanel />
         </Box>
       </Box>
     </AppProvider>
